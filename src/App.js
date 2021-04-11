@@ -1,25 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+// put front facing modules here
 
-function App() {
+export default () => {
+  // React Hook (functional component)
+  const [currentTime, setCurrentTime] = useState(0);
+
+  // python example api
+  useEffect(() => {
+    fetch('/time').then(res => res.json()).then(data => {
+      setCurrentTime(data.time);
+    });
+  }, []);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // login module and dashboard component here
+    <p>The current time is {currentTime}</p>
+    // this is the example to remove later
   );
-}
-
-export default App;
+};
