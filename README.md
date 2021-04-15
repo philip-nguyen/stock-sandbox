@@ -15,6 +15,12 @@ python3 -m venv venv
 source venv/bin/activate
 pip install flask python-dotenv
 ```
+## Login/Firebase setup
+```
+npm install --save react-bootstrap bootstrap
+npm install --save firebase
+```
+
 **If we start using other python libraries pls add them here to the readme as well.**
 
 
