@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Card, Button, Alert } from "react-bootstrap"
 import { useAuth } from "../context/AuthContext"
 import { Link, useHistory } from "react-router-dom"
+import StockSearch from './StockSearch';
 
 export default function Dashboard() {
   const [error, setError] = useState("")
@@ -19,8 +20,16 @@ export default function Dashboard() {
     }
   }
 
+  async function onSymbolSubmit( term ) {
+    const response = 0;
+    // fetch api to python
+  }
+
   return (
-    <>
+    <div>
+      <div id="stock-investor">
+        <StockSearch onFormSubmit={onSymbolSubmit} />
+      </div>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Profile</h2>
@@ -36,6 +45,6 @@ export default function Dashboard() {
           Log Out
         </Button>
       </div>
-    </>
+    </div>
   )
 }
