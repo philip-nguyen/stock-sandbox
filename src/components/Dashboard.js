@@ -3,6 +3,8 @@ import { Card, Button, Alert, Container, Row, Col } from "react-bootstrap"
 import { useAuth } from "../context/AuthContext"
 import { Link, useHistory } from "react-router-dom"
 import StockSearch from './StockSearch';
+import StockList from './StockList';
+
 
 export default function Dashboard() {
   const [error, setError] = useState("")
@@ -23,10 +25,10 @@ export default function Dashboard() {
     }
   }
 
-  async function onSymbolSubmit( symbol ) {
+  async function onSymbolSubmit( input ) {
     const API_KEY = 'OUBE6S10827F8AOA';
     // get time series daily 
-    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${input.symbol}&outputsize=full&apikey=${API_KEY}`;
           console.log(API_Call);
     fetch(API_Call)
       .then(
@@ -51,12 +53,13 @@ export default function Dashboard() {
             symbol: data["Meta Data"]["2. Symbol"],
             price: data["Time Series (Daily)"][currentDate]["1. open"]
           }
+          // TODO: use stock symbol here to use for tableau interface?
           setStocks(stocks => [...stocks, newStock]);
-          //onsole.log(stocks);
+          console.log(stocks);
           // add to stock investment table
         }
       )
-      console.log(stocks);
+      // console.log(stocks);
     // fetch api to python
   }
 
@@ -66,6 +69,7 @@ export default function Dashboard() {
         <Col>
           <div id="stock-investor">
             <StockSearch onFormSubmit={onSymbolSubmit} />
+            <StockList stocks={stocks} />
           </div>
         </Col>
         <Col>
