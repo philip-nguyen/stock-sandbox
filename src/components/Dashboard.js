@@ -26,7 +26,7 @@ export default function Dashboard() {
   }
 
   async function onSymbolSubmit( input ) {
-    const API_KEY = 'OUBE6S10827F8AOA';
+    const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
     // get time series daily 
     let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${input.symbol}&outputsize=full&apikey=${API_KEY}`;
           console.log(API_Call);
@@ -42,25 +42,47 @@ export default function Dashboard() {
           // month is 0-indexed
           let m = d.getMonth() + 1;
           let month = (m < 10) ? "0"+m.toString() : m.toString();
-          let date = (d.getDate() < 10) ? "0"+d.getDate().toString() : d.getDate().toString();
-          let currentDate = d.getFullYear().toString() + "-" + month + "-" + date;
+
+          // get the latest WEEKDAY
+          // could be a little buggy on weekends bc stocks do not have a weekend value
+          let date = d.getDate();
+          if (d.getDay() === 6) date = date - 1;
+          if(d.getDay() === 0) date = date - 2;
+          date = (date < 10) ? "0"+date.toString() : date.toString();
+          
+          let currentDate = d.getFullYear().toString() + "-" + month + "-" + date; 
+          console.log(currentDate);
           
           // Verify that the stock symbol is the same
-          console.log(data["Meta Data"]["2. Symbol"]);
+          // console.log(data["Meta Data"]["2. Symbol"]);
           // get the current date's stock open price
-          console.log(currentDate, data["Time Series (Daily)"][currentDate]["1. open"]);
+          // console.log(currentDate, data["Time Series (Daily)"][currentDate]["1. open"]);
           let newStock = {
             symbol: data["Meta Data"]["2. Symbol"],
-            price: data["Time Series (Daily)"][currentDate]["1. open"]
+            price: data["Time Series (Daily)"][currentDate]["1. open"],
+            investment: input.investment
           }
           // TODO: use stock symbol here to use for tableau interface?
+          
+          // append new Stock to array => this will then UPDATE the props in Stock List
           setStocks(stocks => [...stocks, newStock]);
-          console.log(stocks);
-          // add to stock investment table
+          
         }
       )
-      // console.log(stocks);
-    // fetch api to python
+      
+  }
+
+  // Callback function to pass to each individual stock in the list.
+  // this is sent as a prop to StockList -> StockItem(s)
+  function onStockRemove(stock) {
+    //updatedStocks = stocks;
+    console.log(stock);
+    var updatedStocks = stocks.filter(function(s, index, arr) {
+      return s.symbol !== stock.symbol;
+    });
+
+    console.log(updatedStocks);
+    setStocks(updatedStocks);
   }
 
   return (
@@ -69,7 +91,7 @@ export default function Dashboard() {
         <Col>
           <div id="stock-investor">
             <StockSearch onFormSubmit={onSymbolSubmit} />
-            <StockList stocks={stocks} />
+            <StockList stocks={stocks} onStockRemove={onStockRemove} />
           </div>
         </Col>
         <Col>
