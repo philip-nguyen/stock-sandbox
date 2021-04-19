@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext"
 import { Link, useHistory } from "react-router-dom"
 import StockSearch from './StockSearch';
 import StockList from './StockList';
+import InvestmentSankey from './InvestmentSankey';
 
 
 export default function Dashboard() {
@@ -11,8 +12,9 @@ export default function Dashboard() {
   const { currentUser, logout } = useAuth()
   const history = useHistory()
   const [stocks, setStocks] = useState([]);
+  // the user's total investment
+  const [totalInvestment, setTotalInvestment] = useState(0);
 
-  
 
   async function handleLogout() {
     setError("")
@@ -27,6 +29,9 @@ export default function Dashboard() {
 
   async function onSymbolSubmit( input ) {
     const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+    // add to total investment
+    setTotalInvestment(totalInvestment + parseInt(input.investment));
+    console.log(totalInvestment);
     // get time series daily 
     let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${input.symbol}&outputsize=full&apikey=${API_KEY}`;
           console.log(API_Call);
@@ -85,14 +90,25 @@ export default function Dashboard() {
     setStocks(updatedStocks);
   }
 
+  function handleSaveStocks(stocks) {
+    // TODO: save to firebase
+  }
+
   return (
     <Container>
       <Row>
-        <Col>
-          <div id="stock-investor">
-            <StockSearch onFormSubmit={onSymbolSubmit} />
-            <StockList stocks={stocks} onStockRemove={onStockRemove} />
-          </div>
+        <Col>  
+            { stocks.length > 0 ? (
+              <div id="stock-investor">
+                <StockSearch onFormSubmit={onSymbolSubmit} />
+                <Button>Save</Button>
+                <StockList stocks={stocks} onStockRemove={onStockRemove} />
+                <InvestmentSankey stocks={stocks} investment={totalInvestment} />
+              </div> ) : (
+              <div>
+                <StockSearch onFormSubmit={onSymbolSubmit} />
+              </div>
+              ) }
         </Col>
         <Col>
           <Card>

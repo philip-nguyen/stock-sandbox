@@ -6,6 +6,7 @@ import { Table } from 'react-bootstrap'
 const StockList = ({ stocks, onStockRemove }) => {
   
   // rendered an array of StockItems (which are table rows)
+  // the key could be anything, but setting a key is recommended
   const renderedStocks = stocks.map((stock) => {
     return (
       <StockItem
