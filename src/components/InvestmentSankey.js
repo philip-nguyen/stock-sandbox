@@ -9,7 +9,6 @@ const InvestmentSankey = ({ investment, stocks }) => {
     return data.push(['', stock.symbol, parseInt(stock.investment)]);
   });
 
-  console.log("Stock data for Sankey Diagram", data);
   return (
     <div>
       <Chart 
