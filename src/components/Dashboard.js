@@ -38,7 +38,8 @@ export default function Dashboard() {
       stocks.push({
         symbol: item.symbol,
         price: item.price,
-        investment: item.investment 
+        investment: item.investment, 
+        date: item.date
       });
     });
     setStocks(stocks);
@@ -73,14 +74,20 @@ export default function Dashboard() {
         function(data) {
           let currentDate = getCurrentWeekday();
           
+          let timeSeries = data['Time Series (Daily)']
+          // reduce the data by date key and return the key with latest date (ex. '2021-04-20')
+          let latestOpen = Object.keys(timeSeries).reduce((a, b) => 
+            timeSeries[a] > timeSeries[b] ? b : a);
+          console.log(latestOpen);
           // Verify that the stock symbol is the same
           // console.log(data["Meta Data"]["2. Symbol"]);
           // get the current date's stock open price
-          console.log(currentDate, data["Time Series (Daily)"]);
+          console.log(currentDate, data['Time Series (Daily)']);
           let newStock = {
             symbol: data["Meta Data"]["2. Symbol"],
-            price: data["Time Series (Daily)"][currentDate]["1. open"],
-            investment: input.investment
+            price: data["Time Series (Daily)"][latestOpen]["1. open"],
+            investment: input.investment,
+            date: latestOpen
           }
           // TODO: use stock symbol here to use for tableau interface?
           
@@ -90,6 +97,10 @@ export default function Dashboard() {
         }
       )
       
+  }
+
+  function getStockData(input) {
+
   }
 
   // Callback function to pass to each individual stock in the list.

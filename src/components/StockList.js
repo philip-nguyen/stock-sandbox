@@ -24,6 +24,8 @@ const StockList = ({ stocks, onStockRemove }) => {
           <th>Stock Symbol</th>
           <th>Price Bought</th>
           <th>Investment</th>
+          <th>Date Invested</th>
+          <th>Net</th>
           <th></th>
         </tr>
       </thead>
