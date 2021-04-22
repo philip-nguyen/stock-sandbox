@@ -71,25 +71,12 @@ export default function Dashboard() {
       )
       .then(
         function(data) {
-          var d = new Date();
-          // month is 0-indexed
-          let m = d.getMonth() + 1;
-          let month = (m < 10) ? "0"+m.toString() : m.toString();
-
-          // get the latest WEEKDAY
-          // could be a little buggy on weekends bc stocks do not have a weekend value
-          let date = d.getDate();
-          if (d.getDay() === 6) date = date - 1;
-          if(d.getDay() === 0) date = date - 2;
-          date = (date < 10) ? "0"+date.toString() : date.toString();
-          
-          let currentDate = d.getFullYear().toString() + "-" + month + "-" + date; 
-          console.log(currentDate);
+          let currentDate = getCurrentWeekday();
           
           // Verify that the stock symbol is the same
           // console.log(data["Meta Data"]["2. Symbol"]);
           // get the current date's stock open price
-           console.log(currentDate, data["Time Series (Daily)"]);
+          console.log(currentDate, data["Time Series (Daily)"]);
           let newStock = {
             symbol: data["Meta Data"]["2. Symbol"],
             price: data["Time Series (Daily)"][currentDate]["1. open"],
@@ -116,6 +103,22 @@ export default function Dashboard() {
 
     console.log(updatedStocks);
     setStocks(updatedStocks);
+  }
+
+  function getCurrentWeekday() {
+    var d = new Date();
+    // month is 0-indexed
+    let m = d.getMonth() + 1;
+    let month = (m < 10) ? "0"+m.toString() : m.toString();
+
+    // get the latest WEEKDAY
+    // could be a little buggy on weekends bc stocks do not have a weekend value
+    let date = d.getDate();
+    if (d.getDay() === 6) date = date - 1;
+    if(d.getDay() === 0) date = date - 2;
+    date = (date < 10) ? "0"+date.toString() : date.toString();
+    
+    return d.getFullYear().toString() + "-" + month + "-" + date;
   }
 
   function handleSaveStocks(stocks) {
