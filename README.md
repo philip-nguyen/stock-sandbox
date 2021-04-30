@@ -19,6 +19,7 @@ pip install flask python-dotenv
 ```
 npm install --save react-bootstrap bootstrap
 npm install --save firebase
+npm install --save tableau-api
 ```
 
 **If we start using other python libraries pls add them here to the readme as well.**
