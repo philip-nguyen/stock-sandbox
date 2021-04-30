@@ -1,5 +1,4 @@
 import React, {useRef, useEffect} from "react";
-import Tableau from 'tableau-api';
 
 // npm install tableau-api
 

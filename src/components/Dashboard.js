@@ -17,14 +17,16 @@ export default function Dashboard() {
   const [stocks, setStocks] = useState([]);
   // the user's total investment
   const [totalInvestment, setTotalInvestment] = useState(0);
+  const [netGains, setNetGains] = useState([]);
 
+  const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
   // console.log("UID", currentUser.uid, "email", currentUser.email);
   //setStocks(readStocksFromDB(currentUser));
 
   useEffect(() => {
-    var s = readStocksFromDB(currentUser, onDataRead);
+    var stocks = readStocksFromDB(currentUser, onDataRead);
     //console.log(s);
-
+    
     //s.on("value", onDataRead);
 
   }, []); // empty array runs useEffect only once
@@ -43,6 +45,8 @@ export default function Dashboard() {
         investment: item.investment,
         date: item.date
       });
+      console.log(item.symbol);
+      getStockOpen(item.symbol);
     });
     setStocks(stocks);
   }
@@ -58,8 +62,13 @@ export default function Dashboard() {
     }
   }
 
+<<<<<<< HEAD
   async function onSymbolSubmit(input) {
     const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+=======
+  async function onSymbolSubmit( input ) {
+    
+>>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
     // add to total investment
     setTotalInvestment(totalInvestment + parseInt(input.investment));
     console.log(totalInvestment);
@@ -75,21 +84,28 @@ export default function Dashboard() {
       .then(
         function (data) {
           let currentDate = getCurrentWeekday();
+<<<<<<< HEAD
 
           let timeSeries = data['Time Series (Daily)']
           // reduce the data by date key and return the key with latest date (ex. '2021-04-20')
           let latestOpen = Object.keys(timeSeries).reduce((a, b) =>
             timeSeries[a] > timeSeries[b] ? b : a);
           console.log(latestOpen);
+=======
+          
+          let timeSeries = data["Time Series (Daily)"];
+          let openPrice = Object.keys(timeSeries).reduce(function(a, b){ return timeSeries[a] > timeSeries[b] ? b : a });
+          console.log(openPrice);
+>>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
           // Verify that the stock symbol is the same
           // console.log(data["Meta Data"]["2. Symbol"]);
           // get the current date's stock open price
-          console.log(currentDate, data['Time Series (Daily)']);
+          console.log(currentDate, data["Time Series (Daily)"][openPrice]);
           let newStock = {
             symbol: data["Meta Data"]["2. Symbol"],
-            price: data["Time Series (Daily)"][latestOpen]["1. open"],
+            price: data["Time Series (Daily)"][openPrice]["1. open"],
             investment: input.investment,
-            date: latestOpen
+            date: currentDate
           }
           // TODO: use stock symbol here to use for tableau interface?
 
@@ -101,8 +117,47 @@ export default function Dashboard() {
 
   }
 
-  function getStockData(input) {
+  function getStockOpen(stock) {
+    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock}&outputsize=full&apikey=${API_KEY}`;
+    //console.log(API_Call);
+    fetch(API_Call)
+      .then(
+        function(response){
+          return response.json();
+        }
+      )
+      .then(
+        function(data){
+          //console.log("getStockOpen():",data)
+          let timeSeries = data["Time Series (Daily)"];
+          //console.log(timeSeries);
+          let latestDate = Object.keys(timeSeries).reduce(function(a, b){ return timeSeries[a] > timeSeries[b] ? b : a });
+          
+          let openPrice = timeSeries[latestDate];
+          console.log(openPrice);
+          let delta = 0
 
+          stocks.forEach(function (currStock) {
+            console.log(currStock);
+            console.log(stock);
+            if (currStock.symbol === stock) {
+              console.log("investment:", currStock.investment, "investment price:", currStock.price, "NEW price:", openPrice["1. open"] );
+              let net = parseFloat(currStock.investment) / parseFloat(currStock.price) * parseFloat(openPrice["1. open"]); 
+              delta = net - parseFloat(currStock.investment);
+              console.log(currStock.symbol, delta.toFixed(2));
+            }
+          });
+
+          let newOpenPrice = {
+            symbol: stock,
+            dailyOpenPrice: openPrice["1. open"],
+            netGain: delta.toFixed(2)
+          }
+
+          // console.log(newOpenPrice);
+          setNetGains(netGains => [... netGains, newOpenPrice]);
+        }
+      )
   }
 
   // Callback function to pass to each individual stock in the list.
@@ -141,6 +196,7 @@ export default function Dashboard() {
   return (
     <Container fluid>
       <Row>
+<<<<<<< HEAD
         <Col>
           {stocks.length > 0 ? (
             <div id="stock-investor">
@@ -153,6 +209,20 @@ export default function Dashboard() {
               <StockSearch onFormSubmit={onSymbolSubmit} />
             </div>
           )}
+=======
+        <Col>  
+            { stocks.length > 0 ? (
+              <div id="stock-investor">
+                <StockSearch onFormSubmit={onSymbolSubmit} />
+                <Button onClick={() => saveStocksToDB(currentUser, stocks)}>Save</Button>
+                <StockList stocks={stocks} onStockRemove={onStockRemove} netGains={netGains}/>
+                <InvestmentSankey stocks={stocks} investment={totalInvestment} />
+              </div> ) : (
+              <div>
+                <StockSearch onFormSubmit={onSymbolSubmit} />
+              </div>
+              ) }
+>>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
         </Col>
         <Col>
           <Card>
