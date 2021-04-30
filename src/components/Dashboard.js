@@ -6,6 +6,8 @@ import { saveStocksToDB, readStocksFromDB } from "../firebase";
 import StockSearch from './StockSearch';
 import StockList from './StockList';
 import InvestmentSankey from './InvestmentSankey';
+import Tableau from "./TableauEmbed.js"
+import "./Dashboard.css";
 
 
 export default function Dashboard() {
@@ -38,7 +40,7 @@ export default function Dashboard() {
       stocks.push({
         symbol: item.symbol,
         price: item.price,
-        investment: item.investment, 
+        investment: item.investment,
         date: item.date
       });
     });
@@ -56,27 +58,27 @@ export default function Dashboard() {
     }
   }
 
-  async function onSymbolSubmit( input ) {
+  async function onSymbolSubmit(input) {
     const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
     // add to total investment
     setTotalInvestment(totalInvestment + parseInt(input.investment));
     console.log(totalInvestment);
     // get time series daily 
     let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${input.symbol}&outputsize=full&apikey=${API_KEY}`;
-          console.log(API_Call);
+    console.log(API_Call);
     fetch(API_Call)
       .then(
-        function(response) {
+        function (response) {
           return response.json();
         }
       )
       .then(
-        function(data) {
+        function (data) {
           let currentDate = getCurrentWeekday();
-          
+
           let timeSeries = data['Time Series (Daily)']
           // reduce the data by date key and return the key with latest date (ex. '2021-04-20')
-          let latestOpen = Object.keys(timeSeries).reduce((a, b) => 
+          let latestOpen = Object.keys(timeSeries).reduce((a, b) =>
             timeSeries[a] > timeSeries[b] ? b : a);
           console.log(latestOpen);
           // Verify that the stock symbol is the same
@@ -90,13 +92,13 @@ export default function Dashboard() {
             date: latestOpen
           }
           // TODO: use stock symbol here to use for tableau interface?
-          
+
           // append new Stock to array => this will then UPDATE the props in Stock List
           setStocks(stocks => [...stocks, newStock]);
-          
+
         }
       )
-      
+
   }
 
   function getStockData(input) {
@@ -108,7 +110,7 @@ export default function Dashboard() {
   function onStockRemove(stock) {
     //updatedStocks = stocks;
     console.log(stock);
-    var updatedStocks = stocks.filter(function(s, index, arr) {
+    var updatedStocks = stocks.filter(function (s, index, arr) {
       return s.symbol !== stock.symbol;
     });
 
@@ -120,15 +122,15 @@ export default function Dashboard() {
     var d = new Date();
     // month is 0-indexed
     let m = d.getMonth() + 1;
-    let month = (m < 10) ? "0"+m.toString() : m.toString();
+    let month = (m < 10) ? "0" + m.toString() : m.toString();
 
     // get the latest WEEKDAY
     // could be a little buggy on weekends bc stocks do not have a weekend value
     let date = d.getDate();
     if (d.getDay() === 6) date = date - 1;
-    if(d.getDay() === 0) date = date - 2;
-    date = (date < 10) ? "0"+date.toString() : date.toString();
-    
+    if (d.getDay() === 0) date = date - 2;
+    date = (date < 10) ? "0" + date.toString() : date.toString();
+
     return d.getFullYear().toString() + "-" + month + "-" + date;
   }
 
@@ -137,20 +139,20 @@ export default function Dashboard() {
   }
 
   return (
-    <Container>
+    <Container fluid>
       <Row>
-        <Col>  
-            { stocks.length > 0 ? (
-              <div id="stock-investor">
-                <StockSearch onFormSubmit={onSymbolSubmit} />
-                <Button onClick={() => saveStocksToDB(currentUser, stocks)}>Save</Button>
-                <StockList stocks={stocks} onStockRemove={onStockRemove} />
-                <InvestmentSankey stocks={stocks} investment={totalInvestment} />
-              </div> ) : (
-              <div>
-                <StockSearch onFormSubmit={onSymbolSubmit} />
-              </div>
-              ) }
+        <Col>
+          {stocks.length > 0 ? (
+            <div id="stock-investor">
+              <StockSearch onFormSubmit={onSymbolSubmit} />
+              <Button onClick={() => saveStocksToDB(currentUser, stocks)}>Save</Button>
+              <StockList stocks={stocks} onStockRemove={onStockRemove} />
+              <InvestmentSankey stocks={stocks} investment={totalInvestment} />
+            </div>) : (
+            <div>
+              <StockSearch onFormSubmit={onSymbolSubmit} />
+            </div>
+          )}
         </Col>
         <Col>
           <Card>
@@ -168,10 +170,15 @@ export default function Dashboard() {
               Log Out
             </Button>
           </div>
+
+         
+
         </Col>
+        
       </Row>
-      
-      
+      <Row>
+        <Tableau style='width: 500px; height: 500px;' id="dow" ></Tableau>
+      </Row>
     </Container>
   )
 }
