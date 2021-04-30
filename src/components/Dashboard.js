@@ -62,13 +62,8 @@ export default function Dashboard() {
     }
   }
 
-<<<<<<< HEAD
-  async function onSymbolSubmit(input) {
-    const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-=======
   async function onSymbolSubmit( input ) {
     
->>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
     // add to total investment
     setTotalInvestment(totalInvestment + parseInt(input.investment));
     console.log(totalInvestment);
@@ -84,19 +79,10 @@ export default function Dashboard() {
       .then(
         function (data) {
           let currentDate = getCurrentWeekday();
-<<<<<<< HEAD
-
-          let timeSeries = data['Time Series (Daily)']
-          // reduce the data by date key and return the key with latest date (ex. '2021-04-20')
-          let latestOpen = Object.keys(timeSeries).reduce((a, b) =>
-            timeSeries[a] > timeSeries[b] ? b : a);
-          console.log(latestOpen);
-=======
           
           let timeSeries = data["Time Series (Daily)"];
           let openPrice = Object.keys(timeSeries).reduce(function(a, b){ return timeSeries[a] > timeSeries[b] ? b : a });
           console.log(openPrice);
->>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
           // Verify that the stock symbol is the same
           // console.log(data["Meta Data"]["2. Symbol"]);
           // get the current date's stock open price
@@ -196,20 +182,6 @@ export default function Dashboard() {
   return (
     <Container fluid>
       <Row>
-<<<<<<< HEAD
-        <Col>
-          {stocks.length > 0 ? (
-            <div id="stock-investor">
-              <StockSearch onFormSubmit={onSymbolSubmit} />
-              <Button onClick={() => saveStocksToDB(currentUser, stocks)}>Save</Button>
-              <StockList stocks={stocks} onStockRemove={onStockRemove} />
-              <InvestmentSankey stocks={stocks} investment={totalInvestment} />
-            </div>) : (
-            <div>
-              <StockSearch onFormSubmit={onSymbolSubmit} />
-            </div>
-          )}
-=======
         <Col>  
             { stocks.length > 0 ? (
               <div id="stock-investor">
@@ -222,7 +194,6 @@ export default function Dashboard() {
                 <StockSearch onFormSubmit={onSymbolSubmit} />
               </div>
               ) }
->>>>>>> cb69148c94bbd7584209380195b3cd1e0fba8f59
         </Col>
         <Col>
           <Card>
