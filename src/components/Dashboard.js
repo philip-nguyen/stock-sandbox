@@ -10,6 +10,7 @@ import Tableau from './TableauEmbed.js';
 import './Dashboard.css';
 import Tabs from './Tabs';
 import './Tab.css';
+import Recommend from './Recommend';
 
 export default function Dashboard() {
   const [error, setError] = useState('');
@@ -215,6 +216,14 @@ export default function Dashboard() {
                 )}
               </Col>
               <Col md={4}>
+                <Recommend
+                  text={
+                    stocks.length > 0
+                      ? 'Based on what you buy, we recommend : '
+                      : ''
+                  }
+                  stocks={stocks}
+                />
                 <Card>
                   <Card.Body>
                     <h2 className="text-center mb-4">Profile</h2>
