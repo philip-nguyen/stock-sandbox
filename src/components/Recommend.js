@@ -61,7 +61,7 @@ const Recommend = ({ text, stocks }) => {
     }
 
     return (
-        <div className="tabs">
+        <div>
             <p>{text}</p>
             <p>{displayText}</p>
 
