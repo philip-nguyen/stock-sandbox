@@ -1,4 +1,9 @@
 #dow {
-    position: relative;
-    left: 500px;
+  position: relative;
+  left: 500px;
+}
+
+.button-save {
+  flex: 1;
+  margin: 5px;
 }

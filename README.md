@@ -9,16 +9,26 @@ npm install
 `cd` into the api directory (for UNIX and Cygwin)
 and install flask and python-dotenv
 and if we'll be needing other libraries, here is where we can install them:
+
+MacOS:
 ```
 cd api
 python3 -m venv venv
 source venv/bin/activate
 pip install flask python-dotenv
 ```
+Window:
+```
+cd api
+python -m venv venv
+./venv/Scripts/activate
+pip install flask python-dotenv
+```
 ## Login/Firebase setup
 ```
 npm install --save react-bootstrap bootstrap
 npm install --save firebase
+npm install --save tableau-api
 ```
 
 **If we start using other python libraries pls add them here to the readme as well.**
