@@ -12,8 +12,10 @@ const StockList = ({ stocks, onStockRemove, netGains }) => {
     let dailyOpen = 0;
     netGains.forEach(function (currNet) {
       if(currNet.symbol === stock.symbol) {
-        netGain = currNet.netGain;
+        //netGain = currNet.netGain;
         dailyOpen = currNet.dailyOpenPrice;
+        let net = (parseFloat(stock.investment) / parseFloat(stock.price)) * parseFloat(currNet.dailyOpenPrice);
+        netGain = (net - parseFloat(stock.investment)).toFixed(2);
       }
     });
     return (
