@@ -1,37 +1,48 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { useState } from "react";
 
-class StockSearch extends React.Component {
-    state = { 
-        symbol: '',
-        investment: 0
-    };
+function StockSearch(props) {
+    // const state = {
+    //     symbol: '',
+    //     investment: 0
+    // };
+    const [symbol, setSymbol] = useState("");
+    const [investment, setInvestment] = useState(0);
 
-    onInputChange = (event) => {
-        this.setState({ symbol: event.target.value });
+
+    const onInputChange = (event) => {
+        // this.setState({ symbol: event.target.value });
+        setSymbol(event.target.value);
         // console.log(event.target.value);
     }
 
-    onNumChange = (event) => {
-        this.setState({ investment: event.target.value });
+    const onNumChange = (event) => {
+        // this.setState({ investment: event.target.value });
+        setInvestment(event.target.value)
     }
 
-    onFormSubmit = (event) => {
+    const onFormSubmit = (event) => {
+        const state = {
+            symbol: symbol,
+            investment: investment
+        };
         event.preventDefault();
-
-        this.props.onFormSubmit(this.state);
+        props.onFormSubmit(state);
     }
 
-    render() {
-        return (
-            <Form onSubmit={this.onFormSubmit}>
-                <Form.Label>Stock Symbol</Form.Label>
-                <Form.Control type="text" onChange={this.onInputChange} required />
-                <Form.Label>Investment ($)</Form.Label>
-                <Form.Control type="number" onChange={this.onNumChange} placeholder='5' pattern="^\d+(\.|\,)\d{2}$" required /> 
-                <Form.Control type="submit" />
-            </Form>
-        );
-    }
+    const { t } = useTranslation();
+
+    return (
+        <Form onSubmit={onFormSubmit}>
+            <Form.Label>{t('sym_str')}</Form.Label>
+            <Form.Control type="text" onChange={onInputChange} required />
+            <Form.Label>{t('inv_str')}</Form.Label>
+            <Form.Control type="number" onChange={onNumChange} placeholder='5' pattern="^\d+(\.|\,)\d{2}$" required />
+            <Form.Control type="submit" value={t('submit_str')} />
+        </Form>
+    );
 }
-export default StockSearch;
+export default withTranslation()(StockSearch)

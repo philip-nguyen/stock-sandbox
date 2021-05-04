@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Button, Alert, Container, Row, Col } from 'react-bootstrap';
-
+import { useTranslation } from 'react-i18next';
 
 const Recommend = ({ text, stocks }) => {
+    const { t } = useTranslation();
 
     var stockData = [];
     stocks.map((stock) => {
@@ -65,7 +66,7 @@ const Recommend = ({ text, stocks }) => {
 
         <Card>
             <Card.Body>
-                <h2 className="text-center mb-4">Recommendation</h2>
+                <h2 className="text-center mb-4">{t('recom_str')}</h2>
                 {text}
                 <p><strong>{displayText}</strong></p>
             </Card.Body>

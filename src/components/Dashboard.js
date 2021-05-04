@@ -12,8 +12,11 @@ import Tabs from './Tabs';
 import './Tab.css';
 import Recommend from './Recommend';
 import Prediction from './Prediction';
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
+
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
@@ -27,7 +30,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
-    
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend
@@ -63,12 +65,12 @@ export default function Dashboard() {
 
   async function onSymbolSubmit(input) {
     // normalize all symbols to upper case
-    input = input.toUpperCase();
+    var symbol = input.symbol.toUpperCase();
     // add to total investment
     setTotalInvestment(totalInvestment + parseInt(input.investment));
-    console.log(totalInvestment);
+
     // get time series daily
-    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${input.symbol}&outputsize=full&apikey=${API_KEY}`;
+    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
     console.log(API_Call);
     fetch(API_Call)
       .then(function (response) {
@@ -76,7 +78,6 @@ export default function Dashboard() {
       })
       .then(function (data) {
         let currentDate = getCurrentWeekday();
-
         let timeSeries = data['Time Series (Daily)'];
         let openPrice = Object.keys(timeSeries).reduce(function (a, b) {
           return timeSeries[a] > timeSeries[b] ? b : a;
@@ -105,14 +106,13 @@ export default function Dashboard() {
 
     // check for session storage currentWeekday
     // if present, get the current open price
-    if(isInSessionStorage()) {
+    if (isInSessionStorage()) {
       let newOpenPrice = {
         symbol: stock,
         dailyOpenPrice: sessionStorage.getItem(stock),
       };
 
       setNetGains((netGains) => [...netGains, newOpenPrice]);
-
     }
     // if not the same, then fetch results
     else {
@@ -131,7 +131,7 @@ export default function Dashboard() {
           let openPrice = timeSeries[latestDate];
           console.log(openPrice);
           // session store today's date
-          sessionStorage.setItem("currentDate", latestDate);
+          sessionStorage.setItem('currentDate', latestDate);
 
           // store using session storage for each stock open price
           sessionStorage.setItem(stock, openPrice['1. open']);
@@ -145,19 +145,17 @@ export default function Dashboard() {
           setNetGains((netGains) => [...netGains, newOpenPrice]);
         });
     }
-    
   }
 
   // check session storage if the daily stock opens are present
   function isInSessionStorage() {
     let stocksPresent = true;
-    if( getCurrentWeekday() === sessionStorage.getItem("currentDate")) {
+    if (getCurrentWeekday() === sessionStorage.getItem('currentDate')) {
       stocks.forEach(function (currStock) {
-        if(sessionStorage.getItem(currStock.symbol) === null)
+        if (sessionStorage.getItem(currStock.symbol) === null)
           stocksPresent = false;
       });
-    }
-    else stocksPresent = false;
+    } else stocksPresent = false;
     return stocksPresent;
   }
 
@@ -190,12 +188,11 @@ export default function Dashboard() {
     return d.getFullYear().toString() + '-' + month + '-' + date;
   }
 
-
   return (
     <Container fluid>
       <Row>
         <Tabs>
-          <div label="Profolio">
+          <div label={t('stock_str')}>
             <Row>
               <Col mdPush={4} md={8}>
                 {stocks.length > 0 ? (
@@ -205,7 +202,7 @@ export default function Dashboard() {
                       className="button-save"
                       onClick={() => saveStocksToDB(currentUser, stocks)}
                     >
-                      Save
+                      {t('save_str')}
                     </Button>
                     <StockList
                       stocks={stocks}
@@ -225,71 +222,63 @@ export default function Dashboard() {
               </Col>
               <Col md={4}>
                 <Recommend
-                  text={
-                    stocks.length > 0
-                      ? 'Based on what you buy, we recommend : '
-                      : ''
-                  }
+                  text={stocks.length > 0 ? t('base_str') : ''}
                   stocks={stocks}
                 />
                 <Card>
                   <Card.Body>
-                    <h2 className="text-center mb-4">Profile</h2>
+                    <h2 className="text-center mb-4">{t('profile_str')}</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
-                    <strong>Email:</strong> {currentUser.email}
+                    <strong>{t('email_str')}: </strong> {currentUser.email}
                     <Link
                       to="/update-profile"
                       className="btn btn-primary w-100 mt-3"
                     >
-                      Update Profile
+                      {t('update_profile_str')}
                     </Link>
                   </Card.Body>
                 </Card>
                 <div className="w-100 text-center mt-2">
                   <Button variant="link" onClick={handleLogout}>
-                    Log Out
+                    {t('logout_str')}
                   </Button>
                 </div>
               </Col>
             </Row>
           </div>
 
-          <div label="News">
+          <div label={t('news_str')}>
             <Row>
               <Tableau style="width: 500px; height: 500px;" id="dow"></Tableau>
             </Row>
           </div>
 
-          <div label="Prediction Page">
+          <div label={t('predict_str')}>
             <Row>
               <Col>
                 <Prediction />
               </Col>
               <Col md={4}>
                 <Recommend
-                  text={
-                    stocks.length > 0
-                      ? 'Based on what you buy, we recommend : '
-                      : ''
-                  }
                   stocks={stocks}
+                  text={stocks.length > 0 ? t('base_str') : ''}
                 />
                 <Card>
                   <Card.Body>
-                    <h2 className="text-center mb-4">Profile</h2>
+                    <h2 className="text-center mb-4">{t('profile_str')}</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
-                    <strong>Email:</strong> {currentUser.email}
+                    <strong>{t('email_str')}:</strong> {currentUser.email}
                     <Link
                       to="/update-profile"
                       className="btn btn-primary w-100 mt-3"
                     >
-                      Update Profile
+                      {t('update_profile_str')}
                     </Link>
                   </Card.Body>
                 </Card>
                 <div className="w-100 text-center mt-2">
                   <Button variant="link" onClick={handleLogout}>
-                    Log Out
+                    {t('logout_str')}
                   </Button>
                 </div>
               </Col>
