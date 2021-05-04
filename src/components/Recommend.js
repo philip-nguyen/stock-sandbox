@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Card, Button, Alert, Container, Row, Col } from 'react-bootstrap';
 
 
 const Recommend = ({ text, stocks }) => {
@@ -61,11 +62,14 @@ const Recommend = ({ text, stocks }) => {
     }
 
     return (
-        <div className="tabs">
-            <p>{text}</p>
-            <p>{displayText}</p>
 
-        </div>
+        <Card>
+            <Card.Body>
+                <h2 className="text-center mb-4">Recommendation</h2>
+                {text}
+                <p><strong>{displayText}</strong></p>
+            </Card.Body>
+        </Card>
     );
 };
 
