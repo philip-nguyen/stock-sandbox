@@ -11,7 +11,7 @@ const InvestmentSankey = ({ investment, stocks }) => {
 
   return (
     <div>
-      <Chart 
+      <Chart
         width={600}
         height={'400px'}
         chartType="Sankey"
@@ -20,7 +20,7 @@ const InvestmentSankey = ({ investment, stocks }) => {
         rootProp={{ 'data-testid': '1' }}
       />
     </div>
-    
+
   )
 }
 
