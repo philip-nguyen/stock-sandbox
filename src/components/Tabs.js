@@ -34,6 +34,7 @@ class Tabs extends Component {
 
     return (
       <div className="tabs">
+        <h1 className="text-primary">GameStock</h1>
         <ol className="tab-list">
           {children.map((child) => {
             const { label } = child.props;

@@ -21,14 +21,11 @@ export default function Dashboard() {
   const [netGains, setNetGains] = useState([]);
 
   const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-  // console.log("UID", currentUser.uid, "email", currentUser.email);
   //setStocks(readStocksFromDB(currentUser));
 
   useEffect(() => {
-    var stocks = readStocksFromDB(currentUser, onDataRead);
-    //console.log(s);
-
-    //s.on("value", onDataRead);
+    readStocksFromDB(currentUser, onDataRead);
+    
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend
@@ -83,7 +80,6 @@ export default function Dashboard() {
         console.log(openPrice);
 
         // Verify that the stock symbol is the same
-        // console.log(data["Meta Data"]["2. Symbol"]);
         // get the current date's stock open price
         console.log(currentDate, data['Time Series (Daily)'][openPrice]);
         let newStock = {
@@ -178,9 +174,6 @@ export default function Dashboard() {
     return d.getFullYear().toString() + '-' + month + '-' + date;
   }
 
-  function handleSaveStocks(stocks) {
-    // TODO: save to firebase
-  }
 
   return (
     <Container fluid>
