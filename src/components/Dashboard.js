@@ -60,6 +60,8 @@ export default function Dashboard() {
   }
 
   async function onSymbolSubmit(input) {
+    // normalize all symbols to upper case
+    input = input.toUpperCase();
     // add to total investment
     setTotalInvestment(totalInvestment + parseInt(input.investment));
     console.log(totalInvestment);
@@ -98,51 +100,63 @@ export default function Dashboard() {
   function getStockOpen(stock) {
     let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock}&outputsize=full&apikey=${API_KEY}`;
     //console.log(API_Call);
-    fetch(API_Call)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        //console.log("getStockOpen():",data)
-        let timeSeries = data['Time Series (Daily)'];
-        //console.log(timeSeries);
-        let latestDate = Object.keys(timeSeries).reduce(function (a, b) {
-          return timeSeries[a] > timeSeries[b] ? b : a;
+
+    // check for session storage currentWeekday
+    // if present, get the current open price
+    if(isInSessionStorage()) {
+      let newOpenPrice = {
+        symbol: stock,
+        dailyOpenPrice: sessionStorage.getItem(stock),
+      };
+
+      setNetGains((netGains) => [...netGains, newOpenPrice]);
+
+    }
+    // if not the same, then fetch results
+    else {
+      fetch(API_Call)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          //console.log("getStockOpen():",data)
+          let timeSeries = data['Time Series (Daily)'];
+          //console.log(timeSeries);
+          let latestDate = Object.keys(timeSeries).reduce(function (a, b) {
+            return timeSeries[a] > timeSeries[b] ? b : a;
+          });
+
+          let openPrice = timeSeries[latestDate];
+          console.log(openPrice);
+          // session store today's date
+          sessionStorage.setItem("currentDate", latestDate);
+
+          // store using session storage for each stock open price
+          sessionStorage.setItem(stock, openPrice['1. open']);
+
+          let newOpenPrice = {
+            symbol: stock,
+            dailyOpenPrice: openPrice['1. open'],
+          };
+
+          // console.log(newOpenPrice);
+          setNetGains((netGains) => [...netGains, newOpenPrice]);
         });
+    }
+    
+  }
 
-        let openPrice = timeSeries[latestDate];
-        console.log(openPrice);
-        let delta = 0;
-
-        stocks.forEach(function (currStock) {
-          console.log(currStock);
-          console.log(stock);
-          if (currStock.symbol === stock) {
-            console.log(
-              'investment:',
-              currStock.investment,
-              'investment price:',
-              currStock.price,
-              'NEW price:',
-              openPrice['1. open']
-            );
-            let net =
-              (parseFloat(currStock.investment) / parseFloat(currStock.price)) *
-              parseFloat(openPrice['1. open']);
-            delta = net - parseFloat(currStock.investment);
-            console.log(currStock.symbol, delta.toFixed(2));
-          }
-        });
-
-        let newOpenPrice = {
-          symbol: stock,
-          dailyOpenPrice: openPrice['1. open'],
-          netGain: delta.toFixed(2),
-        };
-
-        // console.log(newOpenPrice);
-        setNetGains((netGains) => [...netGains, newOpenPrice]);
+  // check session storage if the daily stock opens are present
+  function isInSessionStorage() {
+    let stocksPresent = true;
+    if( getCurrentWeekday() === sessionStorage.getItem("currentDate")) {
+      stocks.forEach(function (currStock) {
+        if(sessionStorage.getItem(currStock.symbol) === null)
+          stocksPresent = false;
       });
+    }
+    else stocksPresent = false;
+    return stocksPresent;
   }
 
   // Callback function to pass to each individual stock in the list.
