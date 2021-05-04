@@ -24,11 +24,12 @@ python -m venv venv
 ./venv/Scripts/activate
 pip install flask python-dotenv
 ```
-## Login/Firebase setup
+## Login/Firebase/Tableau/Localization setup
 ```
 npm install --save react-bootstrap bootstrap
 npm install --save firebase
 npm install --save tableau-api
+npm install --save i18next react-i18next i18next-http-backend i18next-browser-languagedetector
 ```
 
 **If we start using other python libraries pls add them here to the readme as well.**
