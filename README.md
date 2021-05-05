@@ -30,6 +30,10 @@ npm install --save react-bootstrap bootstrap
 npm install --save firebase
 npm install --save tableau-api
 npm install --save i18next react-i18next i18next-http-backend i18next-browser-languagedetector
+npm install canvasjs-react-charts
+npm install axios
+npm install axios-cache-adapter
+npm install localforage
 ```
 
 **If we start using other python libraries pls add them here to the readme as well.**
