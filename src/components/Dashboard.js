@@ -14,10 +14,28 @@ import './Tab.css';
 import Recommend from './Recommend';
 import Prediction from './Prediction';
 import { useTranslation } from 'react-i18next';
-import Chart from './StockHistory/Chart.js'
+import Chart from './StockHistory/Chart.js';
+
+import styled from 'styled-components';
+import { Modal } from './Modal';
 
 export default function Dashboard() {
   const { t } = useTranslation();
+
+  //for modal
+  const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  `;
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal((prev) => !prev);
+  };
+  //end for modal
 
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
@@ -36,7 +54,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
-    
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend
@@ -202,111 +219,126 @@ export default function Dashboard() {
 
   return (
     <Container fluid>
-      <Row>
-        <Tabs>
-          <div label={t('stock_str')}>
-            <Row>
-              <Col mdPush={4} md={8}>
-                {/* Chart needs a prop to pass from StockSearch -> Dashboard -> Chart 
+      {/* <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        stockSymbolForHistory={stockSymbolForHistory}
+      /> */}
+      {!showModal && (
+        <Row>
+          <Tabs>
+            <div label={t('stock_str')}>
+              <Row>
+                <Col mdPush={4} md={8}>
+                  {/* Chart needs a prop to pass from StockSearch -> Dashboard -> Chart 
                     Also if the stockSymbol is still not set, then show nothing */}
-                {stockSymbolForHistory === '' ? null : <Chart stockSymbol={stockSymbolForHistory} />}
-                {stocks.length > 0 ? (
-                  <div id="stock-investor">
-                    <StockSearch onFormSubmit={onSymbolSubmit} checkStock={checkStockHistory} />
-                    <Button
-                      className="button-save"
-                      onClick={() => saveStocksToDB(currentUser, stocks)}
-                    >
-                      {t('save_str')}
+                  {stockSymbolForHistory === '' ? null : (
+                    <Chart stockSymbol={stockSymbolForHistory} />
+                  )}
+                  {stocks.length > 0 ? (
+                    <div id="stock-investor">
+                      <StockSearch
+                        onFormSubmit={onSymbolSubmit}
+                        checkStock={checkStockHistory}
+                      />
+                      <Button
+                        className="button-save"
+                        onClick={() => saveStocksToDB(currentUser, stocks)}
+                      >
+                        {t('save_str')}
+                      </Button>
+                      <Button className="button-save" onClick={openModal}>
+                        modal
+                      </Button>
+                      <StockList
+                        stocks={stocks}
+                        onStockRemove={onStockRemove}
+                        netGains={netGains}
+                      />
+                      <InvestmentSankey
+                        stocks={stocks}
+                        investment={totalInvestment}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <StockSearch onFormSubmit={onSymbolSubmit} />
+                    </div>
+                  )}
+                </Col>
+                <Col md={4}>
+                  <Recommend
+                    text={stocks.length > 0 ? t('base_str') : ''}
+                    stocks={stocks}
+                  />
+                  <Card>
+                    <Card.Body>
+                      <h2 className="text-center mb-4">{t('profile_str')}</h2>
+                      {error && <Alert variant="danger">{error}</Alert>}
+                      <strong>{t('email_str')}: </strong> {currentUser.email}
+                      <Link
+                        to="/update-profile"
+                        className="btn btn-primary w-100 mt-3"
+                      >
+                        {t('update_profile_str')}
+                      </Link>
+                    </Card.Body>
+                  </Card>
+                  <div className="w-100 text-center mt-2">
+                    <Button variant="link" onClick={handleLogout}>
+                      {t('logout_str')}
                     </Button>
-                    <StockList
-                      stocks={stocks}
-                      onStockRemove={onStockRemove}
-                      netGains={netGains}
-                    />
-                    <InvestmentSankey
-                      stocks={stocks}
-                      investment={totalInvestment}
-                    />
-
-
-                   
                   </div>
-                ) : (
                   <div>
-                    <StockSearch onFormSubmit={onSymbolSubmit} />
+                    <InvestmentPie stocks={stocks} />
                   </div>
-                )}
-              </Col>
-              <Col md={4}>
-                <Recommend
-                  text={stocks.length > 0 ? t('base_str') : ''}
-                  stocks={stocks}
-                />
-                <Card>
-                  <Card.Body>
-                    <h2 className="text-center mb-4">{t('profile_str')}</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <strong>{t('email_str')}: </strong> {currentUser.email}
-                    <Link
-                      to="/update-profile"
-                      className="btn btn-primary w-100 mt-3"
-                    >
-                      {t('update_profile_str')}
-                    </Link>
-                  </Card.Body>
-                </Card>
-                <div className="w-100 text-center mt-2">
-                  <Button variant="link" onClick={handleLogout}>
-                    {t('logout_str')}
-                  </Button>
-                </div>
-                <div>
-                  <InvestmentPie stocks={stocks} />
-                </div>
-              </Col>
-            </Row>
-          </div>
+                </Col>
+              </Row>
+            </div>
 
-          <div label={t('news_str')}>
-            <Row>
-              <Tableau style="width: 500px; height: 500px;" id="dow"></Tableau>
-            </Row>
-          </div>
+            <div label={t('news_str')}>
+              <Row>
+                <Tableau
+                  style="width: 500px; height: 500px;"
+                  id="dow"
+                ></Tableau>
+              </Row>
+            </div>
 
-          <div label={t('predict_str')}>
-            <Row>
-              <Col>
-                <Prediction />
-              </Col>
-              <Col md={4}>
-                <Recommend
-                  stocks={stocks}
-                  text={stocks.length > 0 ? t('base_str') : ''}
-                />
-                <Card>
-                  <Card.Body>
-                    <h2 className="text-center mb-4">{t('profile_str')}</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <strong>{t('email_str')}:</strong> {currentUser.email}
-                    <Link
-                      to="/update-profile"
-                      className="btn btn-primary w-100 mt-3"
-                    >
-                      {t('update_profile_str')}
-                    </Link>
-                  </Card.Body>
-                </Card>
-                <div className="w-100 text-center mt-2">
-                  <Button variant="link" onClick={handleLogout}>
-                    {t('logout_str')}
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Tabs>
-      </Row>
+            <div label={t('predict_str')}>
+              <Row>
+                <Col>
+                  <Prediction />
+                </Col>
+                <Col md={4}>
+                  <Recommend
+                    stocks={stocks}
+                    text={stocks.length > 0 ? t('base_str') : ''}
+                  />
+                  <Card>
+                    <Card.Body>
+                      <h2 className="text-center mb-4">{t('profile_str')}</h2>
+                      {error && <Alert variant="danger">{error}</Alert>}
+                      <strong>{t('email_str')}:</strong> {currentUser.email}
+                      <Link
+                        to="/update-profile"
+                        className="btn btn-primary w-100 mt-3"
+                      >
+                        {t('update_profile_str')}
+                      </Link>
+                    </Card.Body>
+                  </Card>
+                  <div className="w-100 text-center mt-2">
+                    <Button variant="link" onClick={handleLogout}>
+                      {t('logout_str')}
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </Tabs>
+        </Row>
+      )}
     </Container>
   );
 }
