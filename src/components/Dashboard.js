@@ -13,6 +13,8 @@ import './Tab.css';
 import Recommend from './Recommend';
 import Prediction from './Prediction';
 import { useTranslation } from 'react-i18next';
+import Chart from './StockHistory/Chart.js'
+import { getDailyChartForSymbol } from './StockHistory/ApiConnector';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -30,6 +32,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
+    const fetchStockData = async () => {
+      const result = await getDailyChartForSymbol('TSLA');
+      console.log(result.data);
+      //console.log(API_KEY);
+    }
+    
+    fetchStockData();
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend
@@ -195,6 +204,7 @@ export default function Dashboard() {
           <div label={t('stock_str')}>
             <Row>
               <Col mdPush={4} md={8}>
+                <Chart></Chart>
                 {stocks.length > 0 ? (
                   <div id="stock-investor">
                     <StockSearch onFormSubmit={onSymbolSubmit} />
@@ -213,6 +223,9 @@ export default function Dashboard() {
                       stocks={stocks}
                       investment={totalInvestment}
                     />
+
+
+                   
                   </div>
                 ) : (
                   <div>
