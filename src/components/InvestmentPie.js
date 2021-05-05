@@ -12,13 +12,13 @@ const InvestmentPie = ({ stocks }) => {
   return (
     <div>
       <Chart
-        width={'500px'}
-        height={'300px'}
+        width={'320px'}
+        height={'200px'}
         chartType="PieChart"
         loader={<div>Loading Pie Chart</div>}
         data={data}
         options={{
-            title: 'Investments'
+          title: 'Investments'
         }}
         rootProp={{ 'data-testid': '1' }}
       />

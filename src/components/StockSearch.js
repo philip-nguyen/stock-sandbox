@@ -7,7 +7,7 @@ import './Dashboard.css';
 
 
 export function StockSearch(props) {
-   
+
     // const state = {
     //     symbol: '',
     //     investment: 0
@@ -72,9 +72,9 @@ export function StockSearch(props) {
         <Form onSubmit={onFormSubmit}>
             <Form.Label>{t('sym_str')}</Form.Label>
             <InputGroup className="mb-3">
-                <Form.Control id = "symbolInput" type="text" onChange={onInputChange} placeholder='GME' required />
+                <Form.Control id="symbolInput" type="text" onChange={onInputChange} placeholder='GME' required />
                 <InputGroup.Append>
-                    <Button variant="outline-secondary" onClick={onCheckClick}>Check</Button>
+                    <Button variant="outline-secondary" onClick={onCheckClick}>{t('check_str')}</Button>
                 </InputGroup.Append>
             </InputGroup>
             <Form.Label>{t('inv_str')}</Form.Label>
@@ -84,8 +84,8 @@ export function StockSearch(props) {
                     <Form.Control className="btn btn-success" type="submit" value={t('submit_str')} />
                 </InputGroup.Append>
             </InputGroup>
-            
-            
+
+
         </Form>
     );
 }

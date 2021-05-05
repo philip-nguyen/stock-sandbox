@@ -14,7 +14,7 @@ import './Tab.css';
 import Recommend from './Recommend';
 import Prediction from './Prediction';
 import { useTranslation } from 'react-i18next';
-import Chart from './StockHistory/Chart.js'
+import Chart from './StockHistory/Chart.js';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -36,7 +36,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
-    
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend
@@ -209,16 +208,21 @@ export default function Dashboard() {
               <Col mdPush={4} md={8}>
                 {/* Chart needs a prop to pass from StockSearch -> Dashboard -> Chart 
                     Also if the stockSymbol is still not set, then show nothing */}
-                {stockSymbolForHistory === '' ? null : <Chart stockSymbol={stockSymbolForHistory} />}
+                {stockSymbolForHistory === '' ? null : (
+                  <Chart stockSymbol={stockSymbolForHistory} />
+                )}
+                <StockSearch
+                  onFormSubmit={onSymbolSubmit}
+                  checkStock={checkStockHistory}
+                />
+                <Button
+                  className="button-save"
+                  onClick={() => saveStocksToDB(currentUser, stocks)}
+                >
+                  {t('save_str')}
+                </Button>
                 {stocks.length > 0 ? (
                   <div id="stock-investor">
-                    <StockSearch onFormSubmit={onSymbolSubmit} checkStock={checkStockHistory} />
-                    <Button
-                      className="button-save"
-                      onClick={() => saveStocksToDB(currentUser, stocks)}
-                    >
-                      {t('save_str')}
-                    </Button>
                     <StockList
                       stocks={stocks}
                       onStockRemove={onStockRemove}
@@ -228,14 +232,9 @@ export default function Dashboard() {
                       stocks={stocks}
                       investment={totalInvestment}
                     />
-
-
-                   
                   </div>
                 ) : (
-                  <div>
-                    <StockSearch onFormSubmit={onSymbolSubmit} />
-                  </div>
+                  <div></div>
                 )}
               </Col>
               <Col md={4}>
@@ -256,21 +255,34 @@ export default function Dashboard() {
                     </Link>
                   </Card.Body>
                 </Card>
+
                 <div className="w-100 text-center mt-2">
                   <Button variant="link" onClick={handleLogout}>
                     {t('logout_str')}
                   </Button>
                 </div>
-                <div>
-                  <InvestmentPie stocks={stocks} />
-                </div>
+                <Card>
+                  <Card.Body>
+                    <h2 className="text-center mb-4">{t('overview_str')}</h2>
+                    <p
+                      style={{
+                        // textAlignVertical: 'center',
+                        textAlign: 'center',
+                        font: '40px',
+                      }}
+                    >
+                      {t('total_investment_str')} : {totalInvestment} $
+                    </p>
+                    <InvestmentPie stocks={stocks} />
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
           </div>
 
           <div label={t('news_str')}>
             <Row>
-              <Tableau style="width: 500px; height: 500px;" id="dow"></Tableau>
+              <Tableau id="dow"></Tableau>
             </Row>
           </div>
 
