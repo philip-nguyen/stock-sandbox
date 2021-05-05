@@ -33,7 +33,7 @@ const Chart = ({ stockSymbol }) =>  {
 
     return (
         <div>
-            <h1>{symbol.toString().toUpperCase()}</h1>
+            <h3>History (6 months)</h3>
             <CanvasJSChart
                 options={ {
                     axisY: {

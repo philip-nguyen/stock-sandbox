@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Alert, Container, Row, Col } from 'react-bootstrap';
+import { Card, Button, Alert, Container, Row, Col, Modal } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
 import { saveStocksToDB, readStocksFromDB } from '../firebase';
@@ -32,7 +32,11 @@ export default function Dashboard() {
   const [stockSymbolForHistory, setStockSymbolForHistory] = useState('');
 
   const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-  //setStocks(readStocksFromDB(currentUser));
+  
+  // variables for showing and hiding a modal
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
@@ -200,6 +204,8 @@ export default function Dashboard() {
   // callback function for stock history
   function checkStockHistory(stockSymbol) {
     setStockSymbolForHistory(stockSymbol);
+    // show modal for stock history
+    handleShow();
   }
 
   return (
@@ -211,9 +217,22 @@ export default function Dashboard() {
               <Col mdPush={4} md={8}>
                 {/* Chart needs a prop to pass from StockSearch -> Dashboard -> Chart 
                     Also if the stockSymbol is still not set, then show nothing */}
-                {stockSymbolForHistory === '' ? null : (
-                  <Chart stockSymbol={stockSymbolForHistory} />
-                )}
+                <Modal size="lg" show={show} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>{stockSymbolForHistory.toString().toUpperCase()}</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {stockSymbolForHistory === '' ? null : (
+                      <Chart stockSymbol={stockSymbolForHistory} />
+                    )}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+                
                 <StockSearch
                   onFormSubmit={onSymbolSubmit}
                   checkStock={checkStockHistory}
