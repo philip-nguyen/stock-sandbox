@@ -22,11 +22,14 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
-  var [stocks, setStocks] = useState([]);
+  const [stocks, setStocks] = useState([]);
 
   // the user's total investment
   const [totalInvestment, setTotalInvestment] = useState(0);
   const [netGains, setNetGains] = useState([]);
+
+  // for checking a certain stock's history
+  const [stockSymbolForHistory, setStockSymbolForHistory] = useState('');
 
   const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
   //setStocks(readStocksFromDB(currentUser));
@@ -192,6 +195,11 @@ export default function Dashboard() {
     return d.getFullYear().toString() + '-' + month + '-' + date;
   }
 
+  // callback function for stock history
+  function checkStockHistory(stockSymbol) {
+    setStockSymbolForHistory(stockSymbol);
+  }
+
   return (
     <Container fluid>
       <Row>
@@ -199,10 +207,12 @@ export default function Dashboard() {
           <div label={t('stock_str')}>
             <Row>
               <Col mdPush={4} md={8}>
-                <Chart></Chart>
+                {/* Chart needs a prop to pass from StockSearch -> Dashboard -> Chart 
+                    Also if the stockSymbol is still not set, then show nothing */}
+                {stockSymbolForHistory === '' ? null : <Chart stockSymbol={stockSymbolForHistory} />}
                 {stocks.length > 0 ? (
                   <div id="stock-investor">
-                    <StockSearch onFormSubmit={onSymbolSubmit} />
+                    <StockSearch onFormSubmit={onSymbolSubmit} checkStock={checkStockHistory} />
                     <Button
                       className="button-save"
                       onClick={() => saveStocksToDB(currentUser, stocks)}
