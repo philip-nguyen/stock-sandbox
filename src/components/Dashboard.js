@@ -15,7 +15,6 @@ import Recommend from './Recommend';
 import Prediction from './Prediction';
 import { useTranslation } from 'react-i18next';
 import Chart from './StockHistory/Chart.js'
-import { getDailyChartForSymbol } from './StockHistory/ApiConnector';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,7 +22,8 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
-  const [stocks, setStocks] = useState([]);
+  var [stocks, setStocks] = useState([]);
+
   // the user's total investment
   const [totalInvestment, setTotalInvestment] = useState(0);
   const [netGains, setNetGains] = useState([]);
@@ -33,13 +33,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     readStocksFromDB(currentUser, onDataRead);
-    const fetchStockData = async () => {
-      const result = await getDailyChartForSymbol('TSLA');
-      console.log(result.data);
-      //console.log(API_KEY);
-    }
     
-    fetchStockData();
   }, []); // empty array runs useEffect only once
 
   // callback function for when the data loads on backend

@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { useState } from "react";
 import './Dashboard.css';
+import { getDailyChartForSymbol } from './StockHistory/ApiConnector';
 
-function StockSearch(props) {
+
+export function StockSearch(props) {
+   
     // const state = {
     //     symbol: '',
     //     investment: 0
     // };
     const [symbol, setSymbol] = useState("");
+    //const onClick = useCallback(e => setSymbol(e.target.value), []);
+    //this.symbol = this.symbol.bind(this);
+
     const [investment, setInvestment] = useState(0);
 
 
@@ -34,15 +40,35 @@ function StockSearch(props) {
         props.onFormSubmit(state);
     }
 
+    const onCheckClick = (event) => {
+        console.log(event.target.value);
+        // update stock symbol
+        //setSymbol
+        const newSymbol = document.getElementById("symbolInput").value;
+        console.log(newSymbol);
+        setSymbol(newSymbol);
+
+
+        /*
+        const fetchStockData = async () => {
+            const result = await getDailyChartForSymbol(symbol);
+            console.log(result.data);
+            //console.log(API_KEY);
+          }
+          
+          fetchStockData();
+          */
+    }
+
     const { t } = useTranslation();
 
     return (
         <Form onSubmit={onFormSubmit}>
             <Form.Label>{t('sym_str')}</Form.Label>
             <InputGroup className="mb-3">
-                <Form.Control type="text" onChange={onInputChange} placeholder='GME' required />
+                <Form.Control id = "symbolInput" type="text" onChange={onInputChange} placeholder='GME' required />
                 <InputGroup.Append>
-                    <Button variant="outline-secondary">Check</Button>
+                    <Button variant="outline-secondary" onClick={onCheckClick}>Check</Button>
                 </InputGroup.Append>
             </InputGroup>
             <Form.Label>{t('inv_str')}</Form.Label>

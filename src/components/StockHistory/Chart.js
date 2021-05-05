@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 import { getDailyChartForSymbol } from './ApiConnector';
+import StockSearch from '../StockSearch.js';
+import props from 'prop-types';
 
-const Chart = () => {
+
+
+const Chart = () =>  {
     const [stockData, setStockData] = useState([]);
+    //const symbol = this.props.symbol;
+
+
+    //const test = getDailyChartForSymbol('AMZN');
+    //console.log(formatStockData(test));
+    //const defaultSymbol = "TSLA";
+
 
     // Fetch daily stock chart for TSLA when the component mounts
     useEffect(() => {
