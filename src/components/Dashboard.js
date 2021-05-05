@@ -71,8 +71,7 @@ export default function Dashboard() {
     setTotalInvestment(totalInvestment + parseInt(input.investment));
 
     // get time series daily
-    //let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
-    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=TOMATO`;
+    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
     console.log(API_Call);
     fetch(API_Call)
       .then(function (response) {
