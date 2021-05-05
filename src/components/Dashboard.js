@@ -42,19 +42,22 @@ export default function Dashboard() {
   const onDataRead = (items) => {
     let stocks = [];
     let s = items.stocks;
+    let investment = 0.;
 
     s.forEach((item) => {
-      setTotalInvestment(totalInvestment + parseInt(item.investment));
-      console.log(totalInvestment);
+      investment = investment + parseFloat(item.investment);
+      console.log(investment);
       stocks.push({
         symbol: item.symbol,
         price: item.price,
         investment: item.investment,
         date: item.date,
       });
-      console.log(item.symbol);
+      
       getStockOpen(item.symbol);
     });
+    // call the use state functions
+    setTotalInvestment(investment.toFixed(2));
     setStocks(stocks);
   };
 
@@ -237,7 +240,7 @@ export default function Dashboard() {
                   <div></div>
                 )}
               </Col>
-              <Col md={4}>
+              <Col md={4} className="mb-4">
                 <Recommend
                   text={stocks.length > 0 ? t('base_str') : ''}
                   stocks={stocks}
@@ -253,14 +256,15 @@ export default function Dashboard() {
                     >
                       {t('update_profile_str')}
                     </Link>
+                    <div className="w-100 text-center mt-2">
+                      <Button variant="link" onClick={handleLogout}>
+                        {t('logout_str')}
+                      </Button>
+                    </div>
                   </Card.Body>
                 </Card>
 
-                <div className="w-100 text-center mt-2">
-                  <Button variant="link" onClick={handleLogout}>
-                    {t('logout_str')}
-                  </Button>
-                </div>
+                
                 <Card>
                   <Card.Body>
                     <h2 className="text-center mb-4">{t('overview_str')}</h2>
@@ -271,7 +275,7 @@ export default function Dashboard() {
                         font: '40px',
                       }}
                     >
-                      {t('total_investment_str')} : {totalInvestment} $
+                      {t('total_investment_str')} : ${totalInvestment} 
                     </p>
                     <InvestmentPie stocks={stocks} />
                   </Card.Body>
