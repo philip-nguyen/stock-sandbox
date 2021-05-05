@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { useState } from "react";
 import './Dashboard.css';
-import { getDailyChartForSymbol } from './StockHistory/ApiConnector';
 
 
 export function StockSearch(props) {
@@ -40,7 +39,14 @@ export function StockSearch(props) {
         props.onFormSubmit(state);
     }
 
-    const onCheckClick = (event) => {
+    const onCheckClick = () => {
+        // callback function prop sends local component's symbol back to dashboard
+        props.checkStock(symbol);
+
+
+        // This code snippet only sets stock symbol to the local const stock
+        // which essentially does the same thing as onInputChange
+        /*  
         console.log(event.target.value);
         // update stock symbol
         //setSymbol
@@ -49,7 +55,7 @@ export function StockSearch(props) {
         setSymbol(newSymbol);
 
 
-        /*
+        
         const fetchStockData = async () => {
             const result = await getDailyChartForSymbol(symbol);
             console.log(result.data);
@@ -57,7 +63,7 @@ export function StockSearch(props) {
           }
           
           fetchStockData();
-          */
+        */
     }
 
     const { t } = useTranslation();
