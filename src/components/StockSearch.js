@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { useState } from "react";
+import './Dashboard.css';
 
 function StockSearch(props) {
     // const state = {
@@ -38,10 +39,21 @@ function StockSearch(props) {
     return (
         <Form onSubmit={onFormSubmit}>
             <Form.Label>{t('sym_str')}</Form.Label>
-            <Form.Control type="text" onChange={onInputChange} required />
+            <InputGroup className="mb-3">
+                <Form.Control type="text" onChange={onInputChange} placeholder='GME' required />
+                <InputGroup.Append>
+                    <Button variant="outline-secondary">Check</Button>
+                </InputGroup.Append>
+            </InputGroup>
             <Form.Label>{t('inv_str')}</Form.Label>
-            <Form.Control type="number" onChange={onNumChange} placeholder='5' pattern="^\d+(\.|\,)\d{2}$" required />
-            <Form.Control type="submit" value={t('submit_str')} />
+            <InputGroup className="mb-3">
+                <Form.Control type="number" onChange={onNumChange} placeholder='50' pattern="^\d+(\.|\,)\d{2}$" required />
+                <InputGroup.Append>
+                    <Form.Control className="btn btn-success" type="submit" value={t('submit_str')} />
+                </InputGroup.Append>
+            </InputGroup>
+            
+            
         </Form>
     );
 }

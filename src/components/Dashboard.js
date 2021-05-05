@@ -6,6 +6,7 @@ import { saveStocksToDB, readStocksFromDB } from '../firebase';
 import StockSearch from './StockSearch';
 import StockList from './StockList';
 import InvestmentSankey from './InvestmentSankey';
+import InvestmentPie from './InvestmentPie';
 import Tableau from './TableauEmbed.js';
 import './Dashboard.css';
 import Tabs from './Tabs';
@@ -255,6 +256,9 @@ export default function Dashboard() {
                   <Button variant="link" onClick={handleLogout}>
                     {t('logout_str')}
                   </Button>
+                </div>
+                <div>
+                  <InvestmentPie stocks={stocks} />
                 </div>
               </Col>
             </Row>
