@@ -6,6 +6,7 @@ import { saveStocksToDB, readStocksFromDB } from '../firebase';
 import StockSearch from './StockSearch';
 import StockList from './StockList';
 import InvestmentSankey from './InvestmentSankey';
+import InvestmentPie from './InvestmentPie';
 import Tableau from './TableauEmbed.js';
 import './Dashboard.css';
 import Tabs from './Tabs';
@@ -70,7 +71,8 @@ export default function Dashboard() {
     setTotalInvestment(totalInvestment + parseInt(input.investment));
 
     // get time series daily
-    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+    //let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+    let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=TOMATO`;
     console.log(API_Call);
     fetch(API_Call)
       .then(function (response) {
@@ -242,6 +244,9 @@ export default function Dashboard() {
                   <Button variant="link" onClick={handleLogout}>
                     {t('logout_str')}
                   </Button>
+                </div>
+                <div>
+                  <InvestmentPie stocks={stocks} />
                 </div>
               </Col>
             </Row>
