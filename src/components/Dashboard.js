@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [stocks, setStocks] = useState([]);
 
   // the user's total investment
-  const [totalInvestment, setTotalInvestment] = useState(0);
+  const [totalInvestment, setTotalInvestment] = useState(0.0);
   const [netGains, setNetGains] = useState([]);
 
   // for checking a certain stock's history
@@ -80,7 +80,8 @@ export default function Dashboard() {
     // normalize all symbols to upper case
     var symbol = input.symbol.toUpperCase();
     // add to total investment
-    setTotalInvestment(totalInvestment + parseInt(input.investment));
+    var newInvestment = parseFloat(totalInvestment) + parseFloat(input.investment);
+    setTotalInvestment(newInvestment);
 
     // get time series daily
     let API_Call = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
@@ -176,6 +177,12 @@ export default function Dashboard() {
   // this is sent as a prop to StockList -> StockItem(s)
   function onStockRemove(stock) {
     //updatedStocks = stocks;
+
+    sessionStorage.removeItem(stock.symbol);
+
+    var newInvestment = parseFloat(totalInvestment) - parseFloat(stock.investment);
+    setTotalInvestment(newInvestment);
+
     console.log(stock);
     var updatedStocks = stocks.filter(function (s, index, arr) {
       return s.symbol !== stock.symbol;
