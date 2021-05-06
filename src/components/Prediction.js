@@ -1,8 +1,7 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
-import { useState } from "react";
+
 
 function Prediction() {
 
@@ -13,7 +12,6 @@ function Prediction() {
         // event.preventDefault();
         var result = document.getElementById("mySelect").value;
         var image = document.getElementById("imageid");
-        var source = "";
 
         var symbol = result.toUpperCase();
         var filePath = window.location.origin + "/image/" + symbol + ".png";

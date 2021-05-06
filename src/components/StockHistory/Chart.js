@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 
 
+
 const Chart = ({ stockSymbol }) => {
     const { t } = useTranslation();
     const [stockData, setStockData] = useState([]);
