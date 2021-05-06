@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Alert, Container, Row, Col, Modal } from 'react-bootstrap';
+import {
+  Card,
+  Button,
+  Alert,
+  Container,
+  Row,
+  Col,
+  Modal,
+} from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
 import { saveStocksToDB, readStocksFromDB } from '../firebase';
@@ -32,7 +40,7 @@ export default function Dashboard() {
   const [stockSymbolForHistory, setStockSymbolForHistory] = useState('');
 
   const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-  
+
   // variables for showing and hiding a modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -46,7 +54,7 @@ export default function Dashboard() {
   const onDataRead = (items) => {
     let stocks = [];
     let s = items.stocks;
-    let investment = 0.;
+    let investment = 0;
 
     s.forEach((item) => {
       investment = investment + parseFloat(item.investment);
@@ -57,7 +65,7 @@ export default function Dashboard() {
         investment: item.investment,
         date: item.date,
       });
-      
+
       getStockOpen(item.symbol);
     });
     // call the use state functions
@@ -80,7 +88,8 @@ export default function Dashboard() {
     // normalize all symbols to upper case
     var symbol = input.symbol.toUpperCase();
     // add to total investment
-    var newInvestment = parseFloat(totalInvestment) + parseFloat(input.investment);
+    var newInvestment =
+      parseFloat(totalInvestment) + parseFloat(input.investment);
     setTotalInvestment(newInvestment);
 
     // get time series daily
@@ -180,7 +189,8 @@ export default function Dashboard() {
 
     sessionStorage.removeItem(stock.symbol);
 
-    var newInvestment = parseFloat(totalInvestment) - parseFloat(stock.investment);
+    var newInvestment =
+      parseFloat(totalInvestment) - parseFloat(stock.investment);
     setTotalInvestment(newInvestment);
 
     console.log(stock);
@@ -226,7 +236,9 @@ export default function Dashboard() {
                     Also if the stockSymbol is still not set, then show nothing */}
                 <Modal size="lg" show={show} onHide={handleClose}>
                   <Modal.Header closeButton>
-                    <Modal.Title>{stockSymbolForHistory.toString().toUpperCase()}</Modal.Title>
+                    <Modal.Title>
+                      {stockSymbolForHistory.toString().toUpperCase()}
+                    </Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
                     {stockSymbolForHistory === '' ? null : (
@@ -235,11 +247,11 @@ export default function Dashboard() {
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                      Close
+                      {t('close_str')}
                     </Button>
                   </Modal.Footer>
                 </Modal>
-                
+
                 <StockSearch
                   onFormSubmit={onSymbolSubmit}
                   checkStock={checkStockHistory}
@@ -290,7 +302,6 @@ export default function Dashboard() {
                   </Card.Body>
                 </Card>
 
-                
                 <Card>
                   <Card.Body>
                     <h2 className="text-center mb-4">{t('overview_str')}</h2>
@@ -301,7 +312,7 @@ export default function Dashboard() {
                         font: '40px',
                       }}
                     >
-                      {t('total_investment_str')} : ${totalInvestment} 
+                      {t('total_investment_str')} : ${totalInvestment}
                     </p>
                     <InvestmentPie stocks={stocks} />
                   </Card.Body>

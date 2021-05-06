@@ -3,16 +3,18 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 import { getDailyChartForSymbol } from './ApiConnector';
 import StockSearch from '../StockSearch.js';
 import props from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 
 
-const Chart = ({ stockSymbol }) =>  {
+const Chart = ({ stockSymbol }) => {
+    const { t } = useTranslation();
     const [stockData, setStockData] = useState([]);
     //const symbol = this.props.symbol;
     const [symbol, setSymbol] = useState(stockSymbol);
 
     // whenever the stockSymbol prop updates, use setSymbol
-    if(symbol !== stockSymbol) {
+    if (symbol !== stockSymbol) {
         setSymbol(stockSymbol);
     }
 
@@ -28,14 +30,14 @@ const Chart = ({ stockSymbol }) =>  {
             setStockData(formatStockData(result.data['Time Series (Daily)']));
         };
 
-        if(symbol !== null && symbol !== undefined && symbol !== '') fetchStockData();
+        if (symbol !== null && symbol !== undefined && symbol !== '') fetchStockData();
     }, [symbol]);
 
     return (
         <div>
-            <h3>History (6 months)</h3>
+            <h3>{t('history_str')}</h3>
             <CanvasJSChart
-                options={ {
+                options={{
                     axisY: {
                         // Minimum value is 10% less than the lowest price in the dataset
                         minimum: Math.min(...stockData.map(data => data.low)) / 1.1,
@@ -102,10 +104,10 @@ const Chart = ({ stockSymbol }) =>  {
                             }))
                         }
                     ]
-                } }
+                }}
             />
         </div>
-        
+
     );
 };
 
