@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
     adapter: cache.adapter
 });
 
-const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+//const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 
 
 export const getDailyChartForSymbol = (symbol) => {

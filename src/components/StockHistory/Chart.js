@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 import { getDailyChartForSymbol } from './ApiConnector';
-import StockSearch from '../StockSearch.js';
-import props from 'prop-types';
+
 
 
 

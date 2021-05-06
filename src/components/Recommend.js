@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Card, Button, Alert, Container, Row, Col } from 'react-bootstrap';
+import React from 'react';
+import { Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 const Recommend = ({ text, stocks }) => {
