@@ -33,7 +33,7 @@ export default function Signup() {
 
   return (
     <>
-    <h1>Stockify</h1><br></br>
+    <h1 className="test-primary">GameStock</h1><br></br>
     <h2 className="text-center mb-4">Track Your Stock Progress!</h2>
       <Card>
         <Card.Body>
